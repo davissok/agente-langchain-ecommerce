@@ -2,6 +2,8 @@
 
 Agente conversacional inteligente para ecommerce de suplementos, diseñado para actuar como un asistente de ventas 24/7. El agente es capaz de atender clientes, recomendar suplementos según sus objetivos, consultar el catálogo, gestionar carritos y asistir durante el proceso de compra.
 
+![Preview de la aplicación](preview.jpg)
+
 ## 🚀 Características (MVP V1)
 
 *   **Chat IA 24/7:** Atención constante al cliente mediante lenguaje natural.

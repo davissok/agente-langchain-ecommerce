@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    container_name: suplementos_backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      # Opcional: si la base de datos sqlite está en ./db, montarla para persistencia
+      - ./fallback.db:/app/fallback.db
+    restart: unless-stopped

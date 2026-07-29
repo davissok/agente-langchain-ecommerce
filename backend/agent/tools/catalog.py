@@ -1,9 +1,10 @@
+import json
 from langchain_core.tools import tool
 from db.database import SessionLocal
 from db.models import Product
 
 @tool
-def search_products(query: str) -> list[dict]:
+def search_products(query: str) -> str:
     """Busca productos en el catálogo por nombre o categoría."""
     db = SessionLocal()
     try:
@@ -13,7 +14,10 @@ def search_products(query: str) -> list[dict]:
             (Product.category.ilike(query_str))
         ).limit(10).all()
         
-        return [
+        if not products:
+            return "No se encontraron productos que coincidan con la búsqueda."
+        
+        result = [
             {
                 "id": p.id,
                 "name": p.name,
@@ -24,19 +28,20 @@ def search_products(query: str) -> list[dict]:
             }
             for p in products
         ]
+        return json.dumps(result, ensure_ascii=False)
     finally:
         db.close()
 
 @tool
-def get_product_detail(product_id: int) -> dict:
+def get_product_detail(product_id: int) -> str:
     """Obtiene el detalle completo de un producto incluyendo su descripción."""
     db = SessionLocal()
     try:
         product = db.query(Product).filter(Product.id == product_id).first()
         if not product:
-            return {"error": f"No se encontró un producto con ID {product_id}"}
+            return f"No se encontró un producto con ID {product_id}."
             
-        return {
+        result = {
             "id": product.id,
             "name": product.name,
             "brand": product.brand,
@@ -45,17 +50,19 @@ def get_product_detail(product_id: int) -> dict:
             "stock": product.stock,
             "description": product.description
         }
+        return json.dumps(result, ensure_ascii=False)
     finally:
         db.close()
 
 @tool
-def check_stock(product_id: int) -> dict:
+def check_stock(product_id: int) -> str:
     """Verifica el stock disponible de un producto."""
     db = SessionLocal()
     try:
         product = db.query(Product).filter(Product.id == product_id).first()
         if not product:
-            return {"error": "Producto no encontrado"}
-        return {"product_id": product.id, "name": product.name, "stock": product.stock}
+            return "Producto no encontrado."
+        result = {"product_id": product.id, "name": product.name, "stock": product.stock}
+        return json.dumps(result, ensure_ascii=False)
     finally:
         db.close()

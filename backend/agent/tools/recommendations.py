@@ -1,9 +1,10 @@
+import json
 from langchain_core.tools import tool
 from db.database import SessionLocal
 from db.models import Product
 
 @tool
-def recommend_products(goal: str, budget: float = None) -> list[dict]:
+def recommend_products(goal: str, budget: float = None) -> str:
     """
     Recomienda productos basados en el objetivo del cliente (ej. 'masa muscular', 'definición', 'energía').
     Si el presupuesto está definido, filtra por precio <= budget.
@@ -34,7 +35,10 @@ def recommend_products(goal: str, budget: float = None) -> list[dict]:
         # Retornamos hasta 3 recomendaciones
         recommended = query.limit(3).all()
         
-        return [
+        if not recommended:
+            return "No se encontraron productos que coincidan con ese objetivo y presupuesto."
+        
+        result = [
             {
                 "id": p.id,
                 "name": p.name,
@@ -44,5 +48,6 @@ def recommend_products(goal: str, budget: float = None) -> list[dict]:
             }
             for p in recommended
         ]
+        return json.dumps(result, ensure_ascii=False)
     finally:
         db.close()

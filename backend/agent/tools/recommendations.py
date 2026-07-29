@@ -42,9 +42,10 @@ def recommend_products(goal: str, budget: float = None) -> str:
             {
                 "id": p.id,
                 "name": p.name,
+                "brand": p.brand,
                 "category": p.category,
                 "price": p.price,
-                "reason": f"Ideal para {goal}"
+                "description": p.description
             }
             for p in recommended
         ]

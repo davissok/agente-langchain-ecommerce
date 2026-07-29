@@ -1,18 +1,33 @@
 import json
+import unicodedata
 from langchain_core.tools import tool
 from db.database import SessionLocal
 from db.models import Product
 
+def _strip_accents(text: str) -> str:
+    """Remove accents from text for flexible matching."""
+    nfkd = unicodedata.normalize('NFKD', text)
+    return ''.join(c for c in nfkd if unicodedata.category(c) != 'Mn')
+
 @tool
 def search_products(query: str) -> str:
-    """Busca productos en el catálogo por nombre o categoría."""
+    """Busca productos en el catálogo por nombre, categoría o descripción. Funciona con o sin tildes."""
     db = SessionLocal()
     try:
-        query_str = f"%{query.lower()}%"
-        products = db.query(Product).filter(
-            (Product.name.ilike(query_str)) | 
-            (Product.category.ilike(query_str))
-        ).limit(10).all()
+        # Normalize query: lowercase + strip accents
+        query_normalized = _strip_accents(query.lower())
+        
+        # Fetch all products (MVP has ~8 products, perfectly fine)
+        all_products = db.query(Product).all()
+        
+        # Filter with accent-insensitive matching across name, category, and description
+        products = []
+        for p in all_products:
+            searchable = _strip_accents(
+                f"{p.name} {p.category} {p.description or ''}".lower()
+            )
+            if query_normalized in searchable:
+                products.append(p)
         
         if not products:
             return "No se encontraron productos que coincidan con la búsqueda."
@@ -24,9 +39,10 @@ def search_products(query: str) -> str:
                 "brand": p.brand,
                 "category": p.category,
                 "price": p.price,
-                "stock": p.stock
+                "stock": p.stock,
+                "description": p.description
             }
-            for p in products
+            for p in products[:10]
         ]
         return json.dumps(result, ensure_ascii=False)
     finally:

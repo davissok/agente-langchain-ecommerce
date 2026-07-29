@@ -41,12 +41,12 @@ memory = MemorySaver()
 def custom_prompt(state):
     system_msg = SystemMessage(content=SYSTEM_PROMPT)
     
-    # Recortar el historial para ahorrar tokens
+    # Recortar el historial para ahorrar tokens (basado en cantidad de mensajes)
     trimmed_msgs = trim_messages(
         state["messages"],
-        max_tokens=2000,           # Límite máximo para el historial (ajustable)
+        max_tokens=6,              # Conservar los últimos 6 mensajes del chat
         strategy="last",           # Conservar solo los mensajes más recientes
-        token_counter=model,
+        token_counter=len,         # Cuenta mensajes en lugar de tokens (¡sin dependencias externas!)
         include_system=False,      # El prompt del sistema lo inyectamos manualmente arriba
         start_on="human"           # Garantiza que empiece en un mensaje del usuario
     )

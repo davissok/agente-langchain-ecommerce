@@ -8,3 +8,4 @@ psycopg2-binary
 chromadb
 python-dotenv
 pydantic
+tiktoken

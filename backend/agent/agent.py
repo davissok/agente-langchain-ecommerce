@@ -14,7 +14,7 @@ from rag.vector_store import consult_knowledge_base
 # Inicializar modelo Llama 3.3 70B vía Groq
 model = ChatGroq(
     model="llama-3.3-70b-versatile",
-    temperature=0.95,
+    temperature=0.3,
     max_retries=3,
 )
 

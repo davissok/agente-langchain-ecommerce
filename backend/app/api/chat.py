@@ -4,11 +4,14 @@ from agent.agent import agent_executor
 from langchain_core.messages import HumanMessage
 import traceback
 
+from typing import Optional
+
 router = APIRouter()
 
 class ChatRequest(BaseModel):
     user_id: int
     message: str
+    thread_id: Optional[str] = None
 
 class ChatResponse(BaseModel):
     message: str
@@ -17,7 +20,8 @@ class ChatResponse(BaseModel):
 @router.post("/", response_model=ChatResponse)
 async def chat_endpoint(request: ChatRequest):
     try:
-        config = {"configurable": {"thread_id": str(request.user_id)}}
+        thread_id = request.thread_id if request.thread_id else str(request.user_id)
+        config = {"configurable": {"thread_id": thread_id}}
         
         # Ejecutar el agente de LangGraph
         response = agent_executor.invoke(

@@ -1,4 +1,4 @@
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_groq import ChatGroq
 from langgraph.prebuilt import create_react_agent
 from langgraph.checkpoint.memory import MemorySaver
 import os
@@ -11,13 +11,11 @@ from agent.tools.recommendations import recommend_products
 from agent.tools.orders import get_order_status
 from rag.vector_store import consult_knowledge_base
 
-# Inicializar modelo Gemini
-model = ChatGoogleGenerativeAI(
-    model="gemini-3.5-flash",
+# Inicializar modelo Llama 3.3 70B vía Groq
+model = ChatGroq(
+    model="llama-3.3-70b-versatile",
     temperature=0.3,
-    max_tokens=None,
-    timeout=None,
-    max_retries=2,
+    max_retries=3,
 )
 
 # Lista de herramientas

@@ -20,7 +20,7 @@ El proyecto está dividido en un Frontend y un Backend, comunicados mediante una
 *   **Lenguaje:** Python
 *   **Framework:** FastAPI + Uvicorn
 *   **Agente IA:** LangChain / LangGraph
-*   **LLM API:** Gemini API
+*   **LLM API:** Groq (Llama 3.3 70B)
 
 ### Frontend (Vercel)
 *   **Framework:** Next.js (React)
@@ -44,7 +44,7 @@ El proyecto está dividido en un Frontend y un Backend, comunicados mediante una
 
 ### Backend
 1.  Navega a la carpeta del backend: `cd backend`
-2.  Copia el archivo `.env.example` a `.env` y configura tus variables de entorno (Supabase, Gemini API, etc.).
+2.  Copia el archivo `.env.example` a `.env` y configura tus variables de entorno (Supabase, Groq API, etc.).
 3.  Puedes levantar el backend usando Docker:
     ```bash
     docker-compose up --build
